@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+import os
 from nemo_text_processing.text_normalization.de.utils import get_abs_path, load_labels
 from nemo_text_processing.text_normalization.en.graph_utils import GraphFst, convert_space
 
@@ -44,13 +44,19 @@ class WhiteListFst(GraphFst):
             whitelist = load_labels(file)
             if input_case == "lower_cased":
                 whitelist = [[x[0].lower()] + x[1:] for x in whitelist]
+            elif input_case == "caps":
+                #whitelist = [[x[0].upper()] + x[1:] for x in whitelist]
+                whitelist = [[x[0]] + [y.upper() for y in x[1:]] for x in whitelist]
             graph = pynini.string_map(whitelist)
             return graph
 
-        graph = _get_whitelist_graph(input_case, get_abs_path("data/whitelist.tsv"))
+        # Remove first part of path to work with get_abs_path function
+        formatted_path = os.path.join(*(input_file.split(os.path.sep)[1:]))
+
+        graph = _get_whitelist_graph(input_case, get_abs_path(formatted_path))
         if not deterministic and input_case != "lower_cased":
             graph |= pynutil.add_weight(
-                _get_whitelist_graph("lower_cased", get_abs_path("data/whitelist.tsv")), weight=0.0001
+                _get_whitelist_graph("lower_cased", get_abs_path(formatted_path)), weight=0.0001
             )
 
         if input_file:
