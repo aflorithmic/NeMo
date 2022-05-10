@@ -51,16 +51,20 @@ class WhiteListFst(GraphFst):
             return graph
 
         # Remove first part of path to work with get_abs_path function
-        formatted_path = os.path.join(*(input_file.split(os.path.sep)[1:]))
-
+        formatted_path = os.path.join(*(input_file.split(os.path.sep))[3:])
+        #formatted_path = input_file
         graph = _get_whitelist_graph(input_case, get_abs_path(formatted_path))
+
+        # graph = _get_whitelist_graph(input_case, get_abs_path("data/whitelist.tsv"))
+        #TODO: replace data/whitelist.csv
+
         if not deterministic and input_case != "lower_cased":
             graph |= pynutil.add_weight(
                 _get_whitelist_graph("lower_cased", get_abs_path(formatted_path)), weight=0.0001
             )
 
         if input_file:
-            whitelist_provided = _get_whitelist_graph(input_case, input_file)
+            whitelist_provided = _get_whitelist_graph(input_case, get_abs_path(formatted_path))
             if not deterministic:
                 graph |= whitelist_provided
             else:

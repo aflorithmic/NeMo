@@ -67,7 +67,7 @@ class Normalizer:
         whitelist: str = None,
         lm: bool = False,
     ):
-        assert input_case in ["lower_cased", "cased","caps"]
+        assert input_case in ["lower_cased", "cased", "caps"]
 
         if not PYNINI_AVAILABLE:
             raise ImportError(get_installation_msg())
