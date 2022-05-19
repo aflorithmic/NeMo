@@ -45,7 +45,7 @@ class DateFst(GraphFst):
         super().__init__(name="date", kind="verbalize", deterministic=deterministic)
 
         day_cardinal = pynutil.delete("day: \"") + pynini.closure(NEMO_NOT_QUOTE, 1) + pynutil.delete("\"")
-        day = day_cardinal @ pynini.cdrewrite(ordinal.ordinal_stem, "", "[EOS]", NEMO_SIGMA) + pynutil.insert("ter")
+        day = day_cardinal @ pynini.cdrewrite(ordinal.ordinal_stem, "", "[EOS]", NEMO_SIGMA) + pynutil.insert("ten")
 
         months_names = pynini.union(*[x[1] for x in load_labels(get_abs_path("data/months/abbr_to_name.tsv"))])
         month = pynutil.delete("month: \"") + pynini.closure(NEMO_NOT_QUOTE, 1) + pynutil.delete("\"")
@@ -65,3 +65,25 @@ class DateFst(GraphFst):
 
         delete_tokens = self.delete_tokens(final_graph)
         self.fst = delete_tokens.optimize()
+
+
+## DEBUG##
+
+from pynini.lib import pynutil
+
+def apply_fst(text, fst):
+  """ Given a string input, returns the output string
+  produced by traversing the path with lowest weight.
+  If no valid path accepts input string, returns an
+  error.
+  """
+  try:
+     print(pynini.shortestpath(text @ fst).string())
+  except pynini.FstOpError:
+    print(f"Error: No valid output with given input: '{text}'")
+
+if __name__ == "__main__":
+    cardinal = DateFst().fst
+    example = 'tokens { date { day: "1" month: "Januar" }'
+
+    apply_fst(example, cardinal)
