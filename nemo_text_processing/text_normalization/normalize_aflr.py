@@ -1,5 +1,6 @@
 from nemo_text_processing.text_normalization.normalize import Normalizer
 from time import time
+import re
 class Normalize:
     """
     Main class, mostly based on NeMo's Normalizer with some adjustments.
@@ -7,20 +8,22 @@ class Normalize:
     Class needs to be instantiated once and can then be called directly with text as input
     Example in __main__
     """
-    def __init__(self, lang, input_case="caps", whitelist=None, verbose=False) -> None:
+    def __init__(self, lang, input_case="cased", whitelist=None, verbose=False) -> None:
         assert lang in ["de", "en", "es", "ru"]
         if not whitelist:
             whitelist = f"nemo_text_processing/text_normalization/{lang}/data/whitelist_custom.tsv"
         self.normalizer = Normalizer(input_case=input_case, lang=lang, whitelist=whitelist)
         self.verbose = verbose
     
-    def post_process(self, text) -> str:
-        # TODO: implement
-        # remove spaces before punctuation
-        # remove quotes
+    def pre_process(self, text) -> str:
+        text = text.translate(str.maketrans('', '', "„\'“\"")) # TODO: test if faster than regex
+        text = re.sub("[-–]", " ", text)
+        text = re.sub(" {2,}", " ", text) # remove multiple whitespaces (necessary after prev step)
         return text
     
-    def pre_process(self, text) -> str:
+    def post_process(self, text) -> str:
+        # remove spaces before punctuation
+        text = re.sub(" ([.,?!])", r"\1", text)
         return text
 
     def __call__(self, text) -> str:
@@ -50,8 +53,11 @@ print(f"- Normalized. Writing out to {args.output}")
 """
 if __name__ == "__main__":
     norm = Normalize("de", input_case="cased")
-    normalized = norm("Dr. Hunt kam am 10. März um ca. 23:48 Uhr ins Büro von AFLR")
+    normalized = norm('Dr. Hunt kam am 27. \'"März" um ca. 23:48 Uhr ins „Büro“ von CO₂ AFLR.')
     print(normalized)
+    # print(norm("der mittlerweile knapp 230.000 Mal unterschrieben wurde"))
+    # print(norm("der mittlerweile knapp 230000 Mal unterschrieben wurde"))
+
     # input_case = lower_cased:
     # Dr. Hunt kam um c a . drei und zwanzig uhr acht und vierzig ins Büro der EU.
     # only works with lowercase input, maybe not a good idea for german.
@@ -67,11 +73,12 @@ if __name__ == "__main__":
     # -> currently uses .upper() for case = caps. Better to upper-case the whitelist and take that out of the code. More flexible
     # Ideally shouldn't need the case "caps"
 
-    # with open("/Users/mabs/Documents/programming/validate_script_and_data/test/data/script/heise_filtered2.txt.backup", "r") as f:
+    # with open("/Users/mabs/Documents/programming/validate_script_and_data/test/data/script/old/heise_filtered2.txt.backup", "r") as f:
     #     lines = f.readlines()
     
     # normalised = [norm(line) for line in lines]
 
-    # with open("/Users/mabs/Documents/programming/validate_script_and_data/test/data/script/heise_filtered2.txt.backup_normalised", "w") as f:
-    #     for line in normalised:
-    #         f.write(f"{line}\n")
+    # #with open("/Users/mabs/Documents/programming/validate_script_and_data/test/data/script/heise_filtered2.txt.backup_normalised", "w") as f:
+    # for line in normalised:
+    #     print(line)
+    # #         f.write(f"{line}\n")
