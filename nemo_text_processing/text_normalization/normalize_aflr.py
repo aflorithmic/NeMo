@@ -19,6 +19,7 @@ class Normalize:
         text = text.translate(str.maketrans('', '', "„\'“\"")) # TODO: test if faster than regex
         text = re.sub("[-–]", " ", text)
         text = re.sub(" {2,}", " ", text) # remove multiple whitespaces (necessary after prev step)
+        text = re.sub("(?!\d)\.(?=\d)", "", text) # remove dots inbetween numbers
         return text
     
     def post_process(self, text) -> str:
@@ -53,10 +54,14 @@ print(f"- Normalized. Writing out to {args.output}")
 """
 if __name__ == "__main__":
     norm = Normalize("de", input_case="cased")
-    normalized = norm('Dr. Hunt kam am 27. \'"März" um ca. 23:48 Uhr ins „Büro“ von CO₂ AFLR.')
-    print(normalized)
-    # print(norm("der mittlerweile knapp 230.000 Mal unterschrieben wurde"))
-    # print(norm("der mittlerweile knapp 230000 Mal unterschrieben wurde"))
+    # normalized = norm('Dr. Hunt kam am 27. \'"März" um ca. 23:48 Uhr ins „Büro“ von CO₂ AFLR.')
+    # print(normalized)
+    print(norm("der mittlerweile knapp 230000 Mal unterschrieben wurde"))
+    print(norm("der mittlerweile knapp 230.000 Mal unterschrieben wurde"))
+    """
+
+    # TODO: look at if 230k gets normalised
+    #print(normalized)
 
     # input_case = lower_cased:
     # Dr. Hunt kam um c a . drei und zwanzig uhr acht und vierzig ins Büro der EU.
@@ -82,3 +87,4 @@ if __name__ == "__main__":
     # for line in normalised:
     #     print(line)
     # #         f.write(f"{line}\n")
+    """
