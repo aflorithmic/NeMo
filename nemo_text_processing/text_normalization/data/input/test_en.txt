@@ -1,0 +1,27 @@
+<<sectionName::greeting>> Hello world, 13:30 is time to go for lunch.<<sectionName::goodbye>> It was so lit to meet you.
+<phoneme alphabet=""ipa"" ph=""ˌmænɪˈtoʊbə"">manitoba
+<phoneme alphabet=""x-sampa"" ph='m@""hA:g@%ni:'>mahogany</phoneme>
+Hello {{username|clara}}, welcome to <<sectionName:main_part>> your script.
+<p>,<s>This is sentence one.</s><s>This is sentence two.</s></p>
+Each morning when I wake up, <prosody volume='loud' rate='x-slow'> I speak quite slowly and deliberately until I have my coffee.</prosody>
+What's going <break="400ms"> on?
+Comments & Sections	A comment can be used for <<sectionName::greeting>>	 informational purposes and will be included in the script but ignored by processing.
+Dr. Hunt arrived at the \' AFLR bootcamp at 7:45 am, right before Peadar.
+I like many things e.g. ice cream...
+On 05/06/2021 they paid us $20,000,000 in cold, hard cash.
+What's -52 * 375803?
+Test TEST NASA what's up?
+1 + 2 = 3
+FBI open up
+CO2 emissions have sunk by 2% since 2020.
+03/01/1998 was someone's birthday for sure.
+Can this recognize the £-sign as in £3,520?
+
+======= Issues: ============
+Dates are in US format
+13:30 doesn't get converted to 12hrs time (can be handled outside WFST through %12 + p m suffix)
+£35.20 Doesn't get recognized, but £35,20? does. Why? What about £135,20 and £13,520?
+
+Are the extra spaces here a problem?
+<p>,<s>This is sentence one.</s><s>This is sentence two.</s></p> 
+<p>, <s> This is sentence one. </s> <s> This is sentence two. </s> </p>

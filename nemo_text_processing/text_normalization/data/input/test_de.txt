@@ -1,0 +1,13 @@
+Der 24. Einkäufer erhält 2 gratis Wackelpuddings.
+Am 7. März 2057 geht Michael Jackson zurück zu seinem Heimatplaneten.
+Heute ist der 24.05.2022 und es ist ca. 14:44 Uhr. Wusstest du das?
+Heute ist der 24. 05. 2022 und es ist ca. 14:44 Uhr. Wusstest du das?
+<<sectionName::greeting>> Hello Welt, 13:30 is Zeit zum Mittagessen.<<sectionName::goodbye>>
+Hello {{username|clara}}, wilkommen zu deinem <<sectionName:main_part>> neuen skript.
+Der Vertrag wurde mittlerweile knapp 230.000 Mal unterschrieben !
+Dr. Hunt kam am 27. \'"März" z.B. um 23:48 Uhr ins „Büro“ von CO₂ AFLR.
+Dr. Hunt kam am 27. März z.B. um 23:48 Uhr ins „Büro“ von CO₂ AFLR.
+34% aller Menschen können mit ihren Füßen Essstäbchen benutzen & gleichzeitig jonglieren.
+€630,91 kostet das.
+Das sind £3498,52 nach Inflation.
+Oder $123456789 in echter Währung.

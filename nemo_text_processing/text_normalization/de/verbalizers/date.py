@@ -39,13 +39,25 @@ class DateFst(GraphFst):
         ordinal: ordinal verbalizer GraphFst
         deterministic: if True will provide a single transduction option,
             for False multiple transduction are generated (used for audio-based normalization)
+
+        tokens { date { day: "vier und zwanzig" month: "Mai" year: "zwei tausend zwei und zwanzig" preserve_order: true } }
+        =>
+        day: "vier und zwanzig" month: "Mai" year: "zwei tausend zwei und zwanzig" preserve_order: true
+        day: "ordinal_stem"+ ten
+
+        tokens {  ordinal { integer: "vier und zwanzig"  }  } #If called through ordinal, not date
     """
 
     def __init__(self, ordinal: GraphFst, deterministic: bool = True):
         super().__init__(name="date", kind="verbalize", deterministic=deterministic)
 
+        suffixes = pynini.union("ten", "te")
+        convert_rest = pynutil.insert(suffixes, weight=0.1)
+
         day_cardinal = pynutil.delete("day: \"") + pynini.closure(NEMO_NOT_QUOTE, 1) + pynutil.delete("\"")
-        day = day_cardinal @ pynini.cdrewrite(ordinal.ordinal_stem, "", "[EOS]", NEMO_SIGMA) + pynutil.insert("ten")
+        # day = day_cardinal @ pynini.cdrewrite(ordinal.ordinal_stem, "", "[EOS]", NEMO_SIGMA) + pynutil.insert("ten") # original
+        # My version:
+        day = day_cardinal @ pynini.cdrewrite(pynini.closure(ordinal.ordinal_stem, 0, 1) + convert_rest, "", "[EOS]", NEMO_SIGMA).optimize()
 
         months_names = pynini.union(*[x[1] for x in load_labels(get_abs_path("data/months/abbr_to_name.tsv"))])
         month = pynutil.delete("month: \"") + pynini.closure(NEMO_NOT_QUOTE, 1) + pynutil.delete("\"")
